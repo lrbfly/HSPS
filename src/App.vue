@@ -12,6 +12,7 @@ export default {
 
 <style>
 *{margin: 0;padding: 0;box-sizing: border-box;}
+ul{list-style-type: none;}
 #app {
   min-width: 1920px;
   height: 100vh;

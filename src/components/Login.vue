@@ -16,7 +16,7 @@
             <img class="fill" :src="is_see ? see_img : see_img2 " @click="see()" >
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" class="submit">LOG IN</el-button>
+            <el-button type="primary" class="submit" @click="submit()">LOG IN</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -39,18 +39,25 @@ export default {
         }
     },
     methods: {
+      //id获取焦点
     id_focus: function () {
       if(this.$refs.id.$attrs){
         this.id_isfocus = true
       }
     },
+    //key 获取焦点
     key_focus: function () {
       if(this.$refs.id.$attrs){
         this.key_isfocus = true
       }
     },
+    //查看密码
     see:function(){
       this.is_see = !this.is_see;
+    },
+    // 提交登录
+    submit:function(){
+      this.$router.push("/index");
     }
   }
 };
@@ -163,7 +170,13 @@ export default {
           background: #222D41;
           opacity: .6;
         }
-      .submit{width: 172px;height: 58px;border: 1px solid;}
+      .submit{
+          width: 172px;height: 58px;border: 1px dashed #06ad8c;background: rgba(12,23,49,0.52);border-radius: 8px;border-radius: 8px;cursor: pointer;font-size: 20px;background-image: linear-gradient(#07965F , #01D9A9);
+          -webkit-background-clip: text;
+          color: transparent;letter-spacing: 0.5px;text-align: center;
+          float: right;
+          margin-right: 10px;outline: none;
+        }
     }
   }
 }
