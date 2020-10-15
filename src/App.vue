@@ -23,4 +23,5 @@ ul{list-style-type: none;}
   color: #2c3e50;
   overflow:hidden;
 }
+.Hide{display: none;}
 </style>

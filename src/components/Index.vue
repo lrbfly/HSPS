@@ -26,11 +26,32 @@
                 </li>
             </ul>
             <div class="mid">
-                <div class="Waiting">
-                    <p>WAITING FOR</p> 
-                    <p>ACQUISITION TO START</p>
+                <!--第一动画-->
+                <div :class="isHide=='0'? '' : 'Hide'">
+                    <div class="Waiting">
+                        <p>WAITING FOR</p> 
+                        <p>ACQUISITION TO START</p>
+                    </div>
+                    <img :src="index_anmtion0" class="anmtion0">
                 </div>
-                <img :src="index_anmtion0">
+                <!--第二动画-->
+                <div :class="isHide=='1'? '' : 'Hide'">
+                    <div class="loading">
+                        <p>LOADINGDATA</p> 
+                    </div>
+                    <img :src="index_anmtion1" class="anmtion1">
+                    <img :src="hand" class="hand">
+                </div>
+
+                <div class="startup">
+                    <p>点击启动</p>
+                    <p>请保持网络通畅</p>
+                    <div class="startloading">
+                        <div class="loadingBg">
+                            <span>45%</span>
+                        </div>
+                    </div>
+                </div>
             </div>
       </div>
   </div>
@@ -41,9 +62,14 @@ import 'element-ui/lib/theme-chalk/index.css';
 export default {
     data() {
       return {
+        isHide:1,
         is_check:-1,
         logo : require('../images/login/title.png'),
         index_anmtion0 : require('../images/index/index_anmtion0.png'),
+        index_anmtion1 : require('../images/index/index_anmtion1.png'),
+        index_anmtion2 : require('../images/index/index_anmtion2.png'),
+        index_anmtion3 : require('../images/index/index_anmtion3.png'),
+        hand:require('../images/index/hand.png'),
         options: [{
           value: 0,
           label: '医院0'
@@ -167,7 +193,7 @@ export default {
                 }
             }
             .mid{
-                width: 1028px;margin: auto;
+                width: 1040px;margin: auto;
                 .Waiting{
                     opacity: 0.6;
                     font-family: Bebas;
@@ -176,8 +202,111 @@ export default {
                     letter-spacing: 0;
                     text-align: center;
                     text-shadow: 0 2px 4px #C1BFC9;
+                    line-height: 153px;
                 }
+                
+                .startup{width: 352px;margin: auto;position: relative;position: absolute;
+                        bottom: -180px;
+                        left: 40%;
+                    >p:first-child{width: 160px;margin: auto;font-size: 30px;color: #3B3B3B;text-align: left;background: url(../images/index/startBg.png) no-repeat 100% 50%;background-size: 30px 29px;cursor: pointer;}
+                    >p:nth-child(2){font-size: 12px;
+                                    color: #646D7C;
+                                    letter-spacing: 2.4px;
+                                    text-align: center;
+                                    margin: 12px 0 28px 0;
+                                    }
+                    .startloading{
+                        width: 100%; height: 14px;background: #fff;border-radius: 20px;position: relative;  
+                    }
+                    .startloading::before{content: '100%';font-size: 14px;color: #A9A9A9;position: absolute;top: -16px;right: -32px;}
+                    .loadingBg{
+                                position: absolute;top: 0;left: 0;background-image: linear-gradient(1deg, #2F4F45 25%, #51B895 49%, #A6FBD1 81%, #708C83 100%);
+                                background-image: linear-gradient(180deg, #747E8B 29%, #444C57 0%, #404853 63%, #23272D 100%);
+                                box-shadow: 0 0 5px 0 rgba(0,0,0,0.50), inset 0 1px 3px 0 rgba(45,71,67,0.50);
+                                width: 10%;
+                                height: 14px;
+                                border-radius: 20px 0 0 20px;
+                            >span{position: absolute;top: -16px;right: -20px;font-size: 14px;color: #3B3B3B;}
+                        }
+                }
+                .loading{
+                    opacity: 0.6;
+                    font-family: Bebas;
+                    font-size: 116px;
+                    color: #FFFFFF;
+                    letter-spacing: 0;
+                    text-align: center;
+                    text-shadow: 0 2px 4px #C1BFC9;
+                    line-height: 360px;
+                }
+                
             }
         }
+        .hand{width: 820px;margin: auto;}
+
+        .anmtion0{
+                    display: block;position: relative;top: -160px;margin: auto;
+                    animation:anmtion0 1.8s cubic-bezier(0,0,1,1) infinite alternate;
+                    -moz-animation:anmtion0 1.8s  cubic-bezier(0,0,1,1) infinite alternate; /* Firefox */
+                    -webkit-animation:anmtion0 1.8s  cubic-bezier(0,0,1,1) infinite alternate; /* Safari and Chrome */
+                    -o-animation:anmtion0 1.8s  cubic-bezier(0,0,1,1) infinite alternate; /* Opera */
+                
+                }
+        .anmtion1{
+            display: block;position: absolute;top: 62px;width: 410px;left: 34%;
+            animation:anmtion1 1.8s cubic-bezier(0,0,1,1)  ;
+            -moz-animation:anmtion1 1.8s  cubic-bezier(0,0,1,1)  ; /* Firefox */
+            -webkit-animation:anmtion1 1.8s  cubic-bezier(0,0,1,1)  ; /* Safari and Chrome */
+            -o-animation:anmtion1 1.8s  cubic-bezier(0,0,1,1) ; /* Opera */
+        
+        }
+        
+
+        @keyframes anmtion0
+            {
+                from {opacity: 0;}
+                to {opacity:1;}
+            }
+
+            @-moz-keyframes anmtion0 /* Firefox */
+            {
+                from {opacity: 0;}
+                to {opacity:1;}
+            }
+
+            @-webkit-keyframes anmtion0 /* Safari and Chrome */
+            {
+                from {opacity: 0;}
+                to {opacity:1;}
+            }
+
+            @-o-keyframes anmtion1 /* Opera */
+            {
+                from {opacity: 0;}
+                to {opacity:1;}
+            }
+            @keyframes anmtion1
+            {
+                from {opacity: 0;top:-200px}
+                to {opacity:1;top:62px}
+            }
+
+            @-moz-keyframes anmtion1 /* Firefox */
+            {
+                from {opacity: 0;top:-200px}
+                to {opacity:1;top:62px}
+            }
+
+            @-webkit-keyframes anmtion1 /* Safari and Chrome */
+            {
+                from {opacity: 0;top:-200px}
+                to {opacity:1;top:62px}
+            }
+
+            @-o-keyframes anmtion1 /* Opera */
+            {
+                from {opacity: 0;top:-200px}
+                to {opacity:1;top:62px}
+            }
     }
 </style>
