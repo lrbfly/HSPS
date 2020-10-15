@@ -27,8 +27,8 @@
             </ul>
             <div class="mid">
                 <div class="Waiting">
-                    <p>Waiting for</p> 
-                    <p>acquisition to start</p>
+                    <p>WAITING FOR</p> 
+                    <p>ACQUISITION TO START</p>
                 </div>
                 <img :src="index_anmtion0">
             </div>
@@ -164,6 +164,18 @@ export default {
                         border-radius: 6px;
                         border-radius: 6px;
                     }
+                }
+            }
+            .mid{
+                width: 1028px;margin: auto;
+                .Waiting{
+                    opacity: 0.6;
+                    font-family: Bebas;
+                    font-size: 116px;
+                    color: #FFFFFF;
+                    letter-spacing: 0;
+                    text-align: center;
+                    text-shadow: 0 2px 4px #C1BFC9;
                 }
             }
         }
