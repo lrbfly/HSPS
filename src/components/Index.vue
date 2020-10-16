@@ -41,19 +41,18 @@
                     </div>
                     <img :src="index_anmtion1" class="anmtion1">
                     <img :src="hand" class="hand">
-                </div>
-
-                <div class="startup">
-                    <p>点击启动</p>
-                    <p>请保持网络通畅</p>
-                    <div class="startloading">
-                        <div class="loadingBg">
-                            <span>45%</span>
-                        </div>
-                    </div>
-                </div>
+                </div>   
             </div>
       </div>
+      <div class="startup" @click="startup()">
+            <p>点击启动</p>
+            <p>请保持网络通畅</p>
+            <div class="startloading">
+                <div class="loadingBg" :class=" loadingNum>99 ? 'radiusFull' : '' " :style=" 'width:'+ loadingNum +'%;' ">
+                    <span :class=" loadingNum>99 ? 'Hide' : '' ">{{loadingNum}}%</span>
+                </div>
+            </div>
+        </div>
   </div>
 </template>
 
@@ -70,6 +69,9 @@ export default {
         index_anmtion2 : require('../images/index/index_anmtion2.png'),
         index_anmtion3 : require('../images/index/index_anmtion3.png'),
         hand:require('../images/index/hand.png'),
+        startTime:null,
+        lastTime:null,
+        loadingNum:0,//动画进度
         options: [{
           value: 0,
           label: '医院0'
@@ -90,11 +92,34 @@ export default {
             console.log(e.target.dataset.index)
             this.is_check = e.target.dataset.index
         },
-        sayBye(e){
-        //let msg=e.target.getAttribute('data-msg');
-        let msg=e.target.dataset;
-        console.log(msg)
-    }
+        startup(){
+            if(this.loadingNum>99){
+                return false;
+            }
+            this.startTime = new Date();
+            this.abf();
+        },
+
+
+        abf:function () {
+            let elapsed;//总共 执行了 多少秒
+            let jgTitme; //间隔时间
+            let nowTime = new Date();
+            let lastTime; //执行完成时间
+
+            elapsed = nowTime - this.startTime;
+
+            if(this.lastTime){
+                if(nowTime-this.lastTime>Math.random(9)*10+15){
+                    this.loadingNum++
+                }
+            }
+            console.log(Math.random(9)*10+10)
+            if (this.loadingNum <100) { // 在两秒后停止动画
+                window.requestAnimationFrame(this.abf);
+            }
+            this.lastTime = new Date();
+        }
     }
 
 }
@@ -204,9 +229,12 @@ export default {
                     text-shadow: 0 2px 4px #C1BFC9;
                     line-height: 153px;
                 }
-                
-                .startup{width: 352px;margin: auto;position: relative;position: absolute;
-                        bottom: -180px;
+            }
+        }
+        .hand{width: 820px;margin: auto;}
+        .startup{
+                    width: 352px;margin: auto;position: relative;position: absolute;
+                        bottom: 40px;
                         left: 40%;
                     >p:first-child{width: 160px;margin: auto;font-size: 30px;color: #3B3B3B;text-align: left;background: url(../images/index/startBg.png) no-repeat 100% 50%;background-size: 30px 29px;cursor: pointer;}
                     >p:nth-child(2){font-size: 12px;
@@ -228,22 +256,18 @@ export default {
                                 border-radius: 20px 0 0 20px;
                             >span{position: absolute;top: -16px;right: -20px;font-size: 14px;color: #3B3B3B;}
                         }
+                    .loadingBg.radiusFull{border-radius: 20px;}
                 }
-                .loading{
-                    opacity: 0.6;
-                    font-family: Bebas;
-                    font-size: 116px;
-                    color: #FFFFFF;
-                    letter-spacing: 0;
-                    text-align: center;
-                    text-shadow: 0 2px 4px #C1BFC9;
-                    line-height: 360px;
-                }
-                
+        .loading{
+                opacity: 0.6;
+                font-family: Bebas;
+                font-size: 116px;
+                color: #FFFFFF;
+                letter-spacing: 0;
+                text-align: center;
+                text-shadow: 0 2px 4px #C1BFC9;
+                line-height: 360px;
             }
-        }
-        .hand{width: 820px;margin: auto;}
-
         .anmtion0{
                     display: block;position: relative;top: -160px;margin: auto;
                     animation:anmtion0 1.8s cubic-bezier(0,0,1,1) infinite alternate;
