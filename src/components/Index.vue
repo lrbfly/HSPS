@@ -34,18 +34,47 @@
                     </div>
                     <img :src="index_anmtion0" class="anmtion0">
                 </div>
-                <!--第二动画-->
+                <!--启动动画-->
                 <div :class="isHide=='1'? '' : 'Hide'">
                     <div class="loading">
                         <p>LOADINGDATA</p> 
                     </div>
+                    <!-- <img :src="index_anmtion1" class="anmtion1" :class=" loadingNum>99 ? 'startAnmtion1' : '' "> -->
                     <img :src="index_anmtion1" class="anmtion1">
+                    <img :src="index_anmtion2" class="anmtion2">
+                    <img :src="index_anmtion3" class="anmtion3">
+                    <img :src="index_anmtion4" class="anmtion4">
                     <img :src="hand" class="hand">
-                </div>   
+                </div>
+                <!--启动成功动画-->
+                <div class="success" :class="isHide==3 && is_error==1? '' : 'Hide'">   
+                    <img :src="success_bg" class="success_bg">
+                    <img :src="success_bg1" class="success_bg1" :class="isHide=='3' && is_error=='1'? 'successAnmtion' : ''">
+                    <img :src="success_bg2" class="success_bg2">
+                </div>
+                <!--启动失败动画-->
+                <div class="error" :class="isHide==3 && is_error==0? '' : 'Hide'">   
+                    <img :src="success_bg1" class="success_bg1" :class="isHide=='3' && is_error=='0'? 'errorAnmtion' : ''">
+                </div>
+                <!--建模分析动画 2-->
+                <div class="anasing" :class="isHide=='2' && is_error=='0'? '' : 'Hide'">
+                    <img :src="txt3bg" class="txt3bg">
+                    <img :src="anasingABg" class="anasingABg anasingAnmtion">
+                    <img :src="anasingBBg" class="anasingBBg anasingBnmtion">
+                </div>
+                <!--建模分析动画 4-->
+                <div class="creating" :class="isHide=='4' && is_error=='0'? '' : 'Hide'">
+                    <img :src="creatPerBg" class="creatPerBg">
+                    <img :src="creatPerBg1" class="creatPerBg1 creatingAnmtion" >
+                    <!-- <img :src="creatPerBg2" class="creatPerBg2"> -->
+                </div>
             </div>
       </div>
-      <div class="startup" @click="startup()">
-            <p>点击启动</p>
+      <div class="startup">
+            <p>
+                <span @click="startup(3)">{{isHide==0? '点击启动' : isHide==1? '数据装在中' : isHide==2? '建模分析中' : isHide==3 && is_error==1? '启动成功' : isHide==3 && is_error==0? '启动失败' : '正在生成报告'}} </span> 
+                <span @click="creating()"></span>
+            </p>
             <p>请保持网络通畅</p>
             <div class="startloading">
                 <div class="loadingBg" :class=" loadingNum>99 ? 'radiusFull' : '' " :style=" 'width:'+ loadingNum +'%;' ">
@@ -61,17 +90,34 @@ import 'element-ui/lib/theme-chalk/index.css';
 export default {
     data() {
       return {
-        isHide:1,
-        is_check:-1,
+        isHide:0,//隐藏显示
+        is_check:-1,//选择菜单
         logo : require('../images/login/title.png'),
         index_anmtion0 : require('../images/index/index_anmtion0.png'),
         index_anmtion1 : require('../images/index/index_anmtion1.png'),
         index_anmtion2 : require('../images/index/index_anmtion2.png'),
         index_anmtion3 : require('../images/index/index_anmtion3.png'),
+        index_anmtion4 : require('../images/index/index_anmtion4.png'),
+
+        success_bg : require('../images/index/success_bg.png'),
+        success_bg1 : require('../images/index/success_bg1.png'),
+        success_bg2 : require('../images/index/success_bg2.png'),
+
+        anasingBBg : require('../images/index/anasingBBg.png'),
+        anasingABg : require('../images/index/anasingABg.png'),
+        txt3bg : require('../images/index/txt3bg.png'),
+        
+        creatPerBg : require('../images/index/creatPerBg.png'),
+        creatPerBg1 : require('../images/index/creatPerBg1.png'),
+        creatPerBg2 : require('../images/index/creatPerBg2.png'),
+
         hand:require('../images/index/hand.png'),
-        startTime:null,
-        lastTime:null,
+        startTime:null, //动画开始时间
+        lastTime:null, //每次动画 结束时间
         loadingNum:0,//动画进度
+        animation_num:1,//动画顺序
+        is_error:0,//是否成功
+
         options: [{
           value: 0,
           label: '医院0'
@@ -90,35 +136,113 @@ export default {
     methods: {
         check_menu:function(e){
             console.log(e.target.dataset.index)
-            this.is_check = e.target.dataset.index
+
+            switch(e.target.dataset.index){
+                case '0':
+                    //点击调试
+                     if(this.loadingNum>1){
+                            return false;
+                        }
+                    this.anmtion(2);
+                    break;
+                case '1':
+                    //点击启动
+                    if(this.loadingNum>1){
+                            return false;
+                        }
+                        this.isHide = 1;
+                        this.startTime = new Date();
+                        this.anmtion(3);
+                    break;
+                case '3':
+                    //成果
+                    
+                    break;
+            }
+            this.is_checkindex = e.target.dataset.index
         },
-        startup(){
-            if(this.loadingNum>99){
+        //点击启动
+        startup(index){
+            if(this.loadingNum>1){
                 return false;
             }
+            this.isHide = 1;
             this.startTime = new Date();
-            this.abf();
+            this.anmtion(index);
         },
 
+        //生成报告
+        creating(){
+            //creatingAnmtion
+            if(this.loadingNum>1){
+                return false;
+            }
+            this.isHide = 4;
+            this.startTime = new Date();
+            this.anmtion(4);
+        },
 
-        abf:function () {
+        anmtion:function (index) {  
             let elapsed;//总共 执行了 多少秒
             let jgTitme; //间隔时间
             let nowTime = new Date();
             let lastTime; //执行完成时间
 
             elapsed = nowTime - this.startTime;
+            let dom ;
+            let that = this;
 
-            if(this.lastTime){
-                if(nowTime-this.lastTime>Math.random(9)*10+15){
-                    this.loadingNum++
+            if(index==2){
+                //调式 建模分析
+                this.isHide=2;
+            }else if(index==3){
+                //启动
+                if(this.animation_num==1){
+                    for(let i=1;i<5;i++){
+                        dom = document.getElementsByClassName("anmtion"+i);
+                        dom[0].className = "anmtion"+i+" startAnmtion"+i;
+                        
+                        if(i==4){
+                            this.animation_num=i;
+                            
+                            document.getElementsByClassName("anmtion"+this.animation_num)[0].addEventListener('animationend',()=>{ 
+                                
+                                for(let k=1;k<5;k++){
+                                    document.getElementsByClassName("anmtion"+k)[0].className = "anmtion"+k;
+                                    setTimeout(function() {
+                                        document.getElementsByClassName("anmtion"+k)[0].className = "anmtion"+k+" startAnmtion"+k;
+                                    }, 1)
+                                    
+                                }
+                            }, false)
+                        }
+                    }
                 }
             }
-            console.log(Math.random(9)*10+10)
-            if (this.loadingNum <100) { // 在两秒后停止动画
-                window.requestAnimationFrame(this.abf);
+            
+            
+
+                    
+
+            if(this.lastTime){
+                if(nowTime-this.lastTime>Math.random(9)*100+50){
+                    this.loadingNum++;
+                    this.lastTime = new Date();
+                }
+            }else{
+                this.loadingNum++;
+                this.lastTime = new Date();
             }
-            this.lastTime = new Date();
+            if (this.loadingNum <100) { 
+                window.requestAnimationFrame(this.anmtion);
+            }else{
+                this.isHide = 3;
+                ;Math.random()*10>9?this.is_error = 1:this.is_error = 0;
+                console.log(this.isHide)
+                // for(let g=1;g<5;g++){
+                //     document.getElementsByClassName("anmtion"+g)[0].className = "anmtion"+g;
+                // }
+            }
         }
     }
 
@@ -229,6 +353,22 @@ export default {
                     text-shadow: 0 2px 4px #C1BFC9;
                     line-height: 153px;
                 }
+                .success{position: relative;
+                    .success_bg1,.success_bg2{position: absolute;top: 0;left: 0;}
+                }
+                .error{position: relative;}
+                .anasing{position: relative;
+                    .anasingABg,.anasingBBg{position: absolute;top: -90px;left: 0;display: block;width: 100%;}
+                }
+                .creating{position: relative;
+                .creatPerBg{
+                            display: block;
+                            width: 100%;
+                            position: relative;
+                            top: 120px;
+                        }
+                    .creatPerBg1,.creatPerBg2{position: absolute;top: -80px;left: 404px;}
+                }
             }
         }
         .hand{width: 820px;margin: auto;}
@@ -236,7 +376,9 @@ export default {
                     width: 352px;margin: auto;position: relative;position: absolute;
                         bottom: 40px;
                         left: 40%;
-                    >p:first-child{width: 160px;margin: auto;font-size: 30px;color: #3B3B3B;text-align: left;background: url(../images/index/startBg.png) no-repeat 100% 50%;background-size: 30px 29px;cursor: pointer;}
+                    >p:first-child{cursor: pointer;display: flex;font-size: 30px;color: #3B3B3B;text-align: center;justify-content: center;
+                        >span:last-child{width: 33px;height: 40px; background: url(../images/index/startBg.png) no-repeat 100% 128%;background-size: 33px 34px;display: inline-block;}
+                    }
                     >p:nth-child(2){font-size: 12px;
                                     color: #646D7C;
                                     letter-spacing: 2.4px;
@@ -277,14 +419,52 @@ export default {
                 
                 }
         .anmtion1{
-            display: block;position: absolute;top: 62px;width: 410px;left: 34%;
-            animation:anmtion1 1.8s cubic-bezier(0,0,1,1)  ;
-            -moz-animation:anmtion1 1.8s  cubic-bezier(0,0,1,1)  ; /* Firefox */
-            -webkit-animation:anmtion1 1.8s  cubic-bezier(0,0,1,1)  ; /* Safari and Chrome */
-            -o-animation:anmtion1 1.8s  cubic-bezier(0,0,1,1) ; /* Opera */
+            display: none;position: absolute;top: -1000px;width: 410px;left: 34%;
         
         }
+        .anmtion2{
+            display: none;position: absolute;top: -1000px;width: 300px;left: 43%;
         
+        }
+        .anmtion3,.anmtion4{
+            display: none;position: absolute;top: -400px;width: 300px;left: 43%;
+        
+        }
+        .startAnmtion1{
+            display: block;
+            animation:anmtion1 1.8s cubic-bezier(0,0,1,1)  1;
+            -moz-animation:anmtion1 1.8s  cubic-bezier(0,0,1,1)  1; /* Firefox */
+            -webkit-animation:anmtion1 1.8s  cubic-bezier(0,0,1,1)  1; /* Safari and Chrome */
+            -o-animation:anmtion1 1.8s  cubic-bezier(0,0,1,1)  1; /* Opera */
+        }
+        .startAnmtion2{
+            display: block;
+            animation:anmtion2 1.4s cubic-bezier(0,0,1,1) 1.8s 1;
+            -moz-animation:anmtion2 1.4s  cubic-bezier(0,0,1,1) 1.8s 1; /* Firefox */
+            -webkit-animation:anmtion2 1.4s  cubic-bezier(0,0,1,1) 1.8s 1; /* Safari and Chrome */
+            -o-animation:anmtion2 1.4s  cubic-bezier(0,0,1,1) 1.8s 1; /* Opera */
+        
+        }
+        .startAnmtion3{
+            display: block;
+            animation:anmtion3 1.8s cubic-bezier(0,0,1,1) 3.2s 1;
+            -moz-animation:anmtion3 1.8s  cubic-bezier(0,0,1,1) 3.2s 1; /* Firefox */
+            -webkit-animation:anmtion3 1.8s  cubic-bezier(0,0,1,1) 3.2s 1; /* Safari and Chrome */
+            -o-animation:anmtion3 1.8s  cubic-bezier(0,0,1,1) 3.2s 1; /* Opera */
+        
+        }
+        .startAnmtion4{
+            display: block;
+            animation:anmtion3 1.8s cubic-bezier(0,0,1,1) 5s 1;
+            -moz-animation:anmtion3 1.8s  cubic-bezier(0,0,1,1) 5s 1; /* Firefox */
+            -webkit-animation:anmtion3 1.8s  cubic-bezier(0,0,1,1) 5s 1; /* Safari and Chrome */
+            -o-animation:anmtion3 1.8s  cubic-bezier(0,0,1,1) 5s 1; /* Opera */
+        
+        }
+        .successAnmtion,.errorAnmtion{animation:successAnmtion .4s linear infinite alternate;}
+        .anasingAnmtion{animation: anasingAnmtion 3s linear infinite;}
+        .anasingBnmtion{animation: anasingBnmtion 3s linear infinite;}
+        .creatingAnmtion{animation: creatingAnmtion 3s linear infinite;}
 
         @keyframes anmtion0
             {
@@ -309,28 +489,225 @@ export default {
                 from {opacity: 0;}
                 to {opacity:1;}
             }
+
             @keyframes anmtion1
             {
-                from {opacity: 0;top:-200px}
-                to {opacity:1;top:62px}
+                0% {opacity: 0;top:-200px}
+                20%{opacity: 1;}
+                60% {opacity: 1;top:62px}
+                80% {opacity: 1;top:62px}
+                100% {opacity: 0;top:62px}
             }
 
             @-moz-keyframes anmtion1 /* Firefox */
             {
-                from {opacity: 0;top:-200px}
-                to {opacity:1;top:62px}
+                0% {opacity: 0;top:-200px}
+                20%{opacity: 1;}
+                60% {opacity: 1;top:62px}
+                80% {opacity: 1;top:62px}
+                100% {opacity: 0;top:62px}
             }
 
             @-webkit-keyframes anmtion1 /* Safari and Chrome */
             {
-                from {opacity: 0;top:-200px}
-                to {opacity:1;top:62px}
+                0% {opacity: 0;top:-200px}
+                20%{opacity: 1;}
+                60% {opacity: 1;top:62px}
+                80% {opacity: 1;top:62px}
+                100% {opacity: 0;top:62px}
             }
 
             @-o-keyframes anmtion1 /* Opera */
             {
-                from {opacity: 0;top:-200px}
-                to {opacity:1;top:62px}
+                0% {opacity: 0;top:-200px}
+                20%{opacity: 1;}
+                60% {opacity: 1;top:62px}
+                80% {opacity: 1;top:62px}
+                100% {opacity: 0;top:62px}
+            }
+            /**动画2 */
+            @keyframes anmtion2
+            {
+                0% {opacity: 0;top:-200px}
+                20%{opacity: 1;}
+                60% {opacity: 1;top:-50px}
+                80% {opacity: 1;top:-50px}
+                100% {opacity: 0;top:-50px}
+            }
+
+            @-moz-keyframes anmtion2 /* Firefox */
+            {
+                0% {opacity: 0;top:-200px}
+                20%{opacity: 1;}
+                60% {opacity: 1;top:-50px}
+                80% {opacity: 1;top:-50px}
+                100% {opacity: 0;top:-50px}
+            }
+
+            @-webkit-keyframes anmtion2 /* Safari and Chrome */
+            {
+                0% {opacity: 0;top:-200px}
+                20%{opacity: 1;}
+                60% {opacity: 1;top:-50px}
+                80% {opacity: 1;top:-50px}
+                100% {opacity: 0;top:-50px}
+            }
+
+            @-o-keyframes anmtion2 /* Opera */
+            {
+                0% {opacity: 0;top:-200px}
+                20%{opacity: 1;}
+                60% {opacity: 1;top:-50px}
+                80% {opacity: 1;top:-50px}
+                100% {opacity: 0;top:-50px}
+            }
+
+            /**动画3 */
+            @keyframes anmtion3
+            {
+                0% {opacity: 0;top:-200px}
+                20%{opacity: 1;}
+                60% {opacity: 1;top:200px}
+                80% {opacity: 1;top:200px}
+                100% {opacity: 0;top:200px}
+            }
+
+            @-moz-keyframes anmtion3 /* Firefox */
+            {
+                0% {opacity: 0;top:-200px}
+                20%{opacity: 1;}
+                60% {opacity: 1;top:200px}
+                80% {opacity: 1;top:200px}
+                100% {opacity: 0;top:200px}
+            }
+
+            @-webkit-keyframes anmtion3 /* Safari and Chrome */
+            {
+                0% {opacity: 0;top:-200px}
+                20%{opacity: 1;}
+                60% {opacity: 1;top:200px}
+                80% {opacity: 1;top:200px}
+                100% {opacity: 0;top:200px}
+            }
+
+            @-o-keyframes anmtion3 /* Opera */
+            {
+                0% {opacity: 0;top:-200px}
+                20%{opacity: 1;}
+                60% {opacity: 1;top:200px}
+                80% {opacity: 1;top:200px}
+                100% {opacity: 0;top:200px}
+            }
+
+            /**启动成功动画 */
+             @keyframes successAnmtion
+            {
+                0% {opacity: 0;}
+                100% {opacity: 1;}
+            }
+
+            @-moz-keyframes anmtion2 /* Firefox */
+            {
+                0% {opacity: 0;}
+                100% {opacity: 1;}
+            }
+
+            @-webkit-keyframes anmtion2 /* Safari and Chrome */
+            {
+                0% {opacity: 0;}
+                100% {opacity: 1;}
+            }
+
+            @-o-keyframes anmtion2 /* Opera */
+            {
+                0% {opacity: 0;}
+                100% {opacity: 1;}
+            }
+
+            /**建模 A 动画 */
+             @keyframes anasingAnmtion
+            {
+                0% {opacity: 1;}
+                50% {opacity: 0;}
+                100% {opacity: 1;}
+            }
+
+            @-moz-keyframes anasingAnmtion /* Firefox */
+            {
+                0% {opacity: 1;}
+                50% {opacity: 0;}
+                100% {opacity: 1;}
+            }
+
+            @-webkit-keyframes anasingAnmtion /* Safari and Chrome */
+            {
+                0% {opacity: 1;}
+                50% {opacity: 0;}
+                100% {opacity: 1;}
+            }
+
+            @-o-keyframes anasingAnmtion /* Opera */
+            {
+                0% {opacity: 0;}
+                50% {opacity: 1;}
+                100% {opacity: 0;}
+            }
+            /**建模 B 动画 */
+             @keyframes anasingBnmtion
+            {
+                0% {opacity: 0;}
+                50% {opacity: 1;}
+                100% {opacity: 0;}
+            }
+            @-moz-keyframes anasingBnmtion /* Firefox */
+            {
+                0% {opacity: 0;}
+                50% {opacity: 1;}
+                100% {opacity: 0;}
+            }
+
+            @-webkit-keyframes anasingBnmtion /* Safari and Chrome */
+            {
+                0% {opacity: 0;}
+                50% {opacity: 1;}
+                100% {opacity: 0;}
+            }
+
+            @-o-keyframes anasingBnmtion /* Opera */
+            {
+                0% {opacity: 0;}
+                30% {opacity: 1;}
+                40% {opacity: 0;}
+                100% {opacity: 0;}
+            }
+            /**生成报告 */
+            
+            @keyframes creatingAnmtion
+            {
+                0% {opacity: 0;}
+                50% {opacity: 1;}
+                100% {opacity: 0;}
+            }
+            @-moz-keyframes creatingAnmtion /* Firefox */
+            {
+                0% {opacity: 0;}
+                50% {opacity: 1;}
+                100% {opacity: 0;}
+            }
+
+            @-webkit-keyframes creatingAnmtion /* Safari and Chrome */
+            {
+                0% {opacity: 0;}
+                50% {opacity: 1;}
+                100% {opacity: 0;}
+            }
+
+            @-o-keyframes creatingAnmtion /* Opera */
+            {
+                0% {opacity: 0;}
+                30% {opacity: 1;}
+                40% {opacity: 0;}
+                100% {opacity: 0;}
             }
     }
 </style>
