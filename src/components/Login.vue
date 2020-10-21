@@ -9,10 +9,10 @@
         </p>
         <el-form ref="form">
           <el-form-item>
-            <el-input class="id" :class="id_isfocus? 'active' : '' " v-model="id" @focus="id_focus()" index=0 ref="id"></el-input>
+            <el-input class="id" :class="id_isfocus? 'active' : '' " v-model="id" @focus="id_focus()" index=0 ref="id" autoconplete= off></el-input>
           </el-form-item>
           <el-form-item>
-            <el-input :type="is_see? 'text' : 'password' " class="key" :class="key_isfocus? 'active' : '' " v-model="key" @focus="key_focus()" index=1 ref="key"></el-input>
+            <el-input :type="is_see? 'text' : 'password' " class="key" :class="key_isfocus? 'active' : '' " v-model="key" @focus="key_focus()" index=1 ref="key" autoconplete= off></el-input>
             <img class="fill" :src="is_see ? see_img : see_img2 " @click="see()" >
           </el-form-item>
           <el-form-item>
@@ -109,7 +109,7 @@ export default {
         height: 72px;
         position: relative;
         margin-bottom: 46px;
-        >>> .el-input__inner {
+        /deep/ .el-input__inner {
           width: 100%;
           height: 100%;
           font-size: 14px;

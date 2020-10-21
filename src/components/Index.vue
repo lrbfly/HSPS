@@ -136,13 +136,16 @@ export default {
     methods: {
         check_menu:function(e){
             console.log(e.target.dataset.index)
-
+            this.is_check = e.target.dataset.index;
+            this.$router.push("/Login");
             switch(e.target.dataset.index){
                 case '0':
                     //点击调试
+                    
                      if(this.loadingNum>1){
                             return false;
                         }
+                    
                     this.anmtion(2);
                     break;
                 case '1':
@@ -154,12 +157,11 @@ export default {
                         this.startTime = new Date();
                         this.anmtion(3);
                     break;
-                case '3':
+                case '2':
                     //成果
                     
                     break;
             }
-            this.is_checkindex = e.target.dataset.index
         },
         //点击启动
         startup(index){
@@ -278,7 +280,7 @@ export default {
                 height: 375px;
                 background-image: linear-gradient(#184A4C, #171D31);
                 position: absolute;
-                top: -15px;
+                top: -20px;
                 right: 0;
                 >.logo img{
                     display: block;
