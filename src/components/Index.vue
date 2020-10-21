@@ -141,12 +141,12 @@ export default {
             switch(e.target.dataset.index){
                 case '0':
                     //点击调试
+                    this.$router.push("/Debug");
+                    //  if(this.loadingNum>1){
+                    //         return false;
+                    //     }
                     
-                     if(this.loadingNum>1){
-                            return false;
-                        }
-                    
-                    this.anmtion(2);
+                    // this.anmtion(2);
                     break;
                 case '1':
                     //点击启动
@@ -159,7 +159,7 @@ export default {
                     break;
                 case '2':
                     //成果
-                    
+                    this.$router.push("/Report");
                     break;
             }
         },
