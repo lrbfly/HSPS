@@ -7,24 +7,7 @@
                     </el-option>
                 </el-select>
             </div>
-            <ul class="menu">
-                <li class="logo">
-                    <img :src="logo">
-                    <p>打击骗保机器人</p>
-                </li>
-                <li class="debug" :class="is_check == '0' ? 'active' : '' ">
-                    <div></div>
-                    <span @click="check_menu($event)" data-index='0'>调试</span>
-                </li>
-                <li class="start" :class="is_check == '1' ? 'active' : '' ">
-                    <div></div>
-                    <span @click="check_menu($event)" data-index='1'>启动</span>
-                </li>
-                <li class="successful" :class="is_check == '2' ? 'active' : '' ">
-                    <div></div>
-                    <span @click="check_menu($event)" data-index='2'>成果</span>
-                </li>
-            </ul>
+            <Menu></Menu>
             <div class="mid">
                 <!--第一动画-->
                 <div :class="isHide=='0'? '' : 'Hide'">
@@ -54,16 +37,18 @@
                 </div>
                 <!--启动失败动画-->
                 <div class="error" :class="isHide==3 && is_error==0? '' : 'Hide'">   
-                    <img :src="success_bg1" class="success_bg1" :class="isHide=='3' && is_error=='0'? 'errorAnmtion' : ''">
+                    <img :src="error_bg" class="error_bg">
+                    <img :src="error_bg2" class="error_bg2">
+                    <img :src="error_bg1" class="error_bg1" :class="isHide=='3' && is_error=='0'? 'errorAnmtion' : ''">
                 </div>
                 <!--建模分析动画 2-->
-                <div class="anasing" :class="isHide=='2' && is_error=='0'? '' : 'Hide'">
+                <div class="anasing" :class="isHide=='2' ? '' : 'Hide'">
                     <img :src="txt3bg" class="txt3bg">
                     <img :src="anasingABg" class="anasingABg anasingAnmtion">
                     <img :src="anasingBBg" class="anasingBBg anasingBnmtion">
                 </div>
                 <!--建模分析动画 4-->
-                <div class="creating" :class="isHide=='4' && is_error=='0'? '' : 'Hide'">
+                <div class="creating" :class="isHide=='4' ? '' : 'Hide'">
                     <img :src="creatPerBg" class="creatPerBg">
                     <img :src="creatPerBg1" class="creatPerBg1 creatingAnmtion" >
                     <!-- <img :src="creatPerBg2" class="creatPerBg2"> -->
@@ -72,10 +57,11 @@
       </div>
       <div class="startup">
             <p>
-                <span @click="startup(3)">{{isHide==0? '点击启动' : isHide==1? '数据装在中' : isHide==2? '建模分析中' : isHide==3 && is_error==1? '启动成功' : isHide==3 && is_error==0? '启动失败' : '正在生成报告'}} </span> 
+                <!-- isHide==1? '点击启动' : isHide==2? '建模分析中' : isHide==3 && is_error==1? '启动成功' : isHide==3 && is_error==0? '启动失败' : '正在生成报告' -->
+                <span @click="startup(3)">{{is_start==0? '点击启动' : isHide==1 && is_start==1? '装载数据中' : isHide==2 && is_start==1 ? "建模分析中" : isHide==4 && is_start==1 ? "正在生成报告" : isHide==3 && is_error==0? "启动失败" :'启动成功'}} </span> 
                 <span @click="creating()"></span>
             </p>
-            <p>请保持网络通畅</p>
+            <p>请保持网络通畅{{changMenu}}</p>
             <div class="startloading">
                 <div class="loadingBg" :class=" loadingNum>99 ? 'radiusFull' : '' " :style=" 'width:'+ loadingNum +'%;' ">
                     <span :class=" loadingNum>99 ? 'Hide' : '' ">{{loadingNum}}%</span>
@@ -87,11 +73,17 @@
 
 <script>
 import 'element-ui/lib/theme-chalk/index.css';
+import Menu from './Menu'
 export default {
+     components: {
+         Menu
+    },
     data() {
       return {
         isHide:0,//隐藏显示
         is_check:-1,//选择菜单
+        is_start : 0 ,//是否启动动画
+
         logo : require('../images/login/title.png'),
         index_anmtion0 : require('../images/index/index_anmtion0.png'),
         index_anmtion1 : require('../images/index/index_anmtion1.png'),
@@ -102,6 +94,11 @@ export default {
         success_bg : require('../images/index/success_bg.png'),
         success_bg1 : require('../images/index/success_bg1.png'),
         success_bg2 : require('../images/index/success_bg2.png'),
+
+        
+        error_bg : require('../images/index/error_bg.png'),
+        error_bg1 : require('../images/index/error_bg1.png'),
+        error_bg2 : require('../images/index/error_bg2.png'),
 
         anasingBBg : require('../images/index/anasingBBg.png'),
         anasingABg : require('../images/index/anasingABg.png'),
@@ -134,43 +131,14 @@ export default {
     },
 
     methods: {
-        check_menu:function(e){
-            console.log(e.target.dataset.index)
-            this.is_check = e.target.dataset.index;
-            this.$router.push("/Login");
-            switch(e.target.dataset.index){
-                case '0':
-                    //点击调试
-                    this.$router.push("/Debug");
-                    //  if(this.loadingNum>1){
-                    //         return false;
-                    //     }
-                    
-                    // this.anmtion(2);
-                    break;
-                case '1':
-                    //点击启动
-                    if(this.loadingNum>1){
-                            return false;
-                        }
-                        this.isHide = 1;
-                        this.startTime = new Date();
-                        this.anmtion(3);
-                    break;
-                case '2':
-                    //成果
-                    this.$router.push("/Report");
-                    break;
-            }
-        },
         //点击启动
         startup(index){
             if(this.loadingNum>1){
                 return false;
             }
-            this.isHide = 1;
+            this.is_start = 1;
             this.startTime = new Date();
-            this.anmtion(index);
+            this.anmtion(1);
         },
 
         //生成报告
@@ -194,12 +162,10 @@ export default {
             let dom ;
             let that = this;
 
-            if(index==2){
-                //调式 建模分析
-                this.isHide=2;
-            }else if(index==3){
+           if(index==1){
                 //启动
-                if(this.animation_num==1){
+                this.isHide = 1;
+                if(this.animation_num==1 && this.is_start==1){
                     for(let i=1;i<5;i++){
                         dom = document.getElementsByClassName("anmtion"+i);
                         dom[0].className = "anmtion"+i+" startAnmtion"+i;
@@ -219,38 +185,57 @@ export default {
                             }, false)
                         }
                     }
+
+
+
+                    
                 }
             }
             
             
-
-                    
-
-            if(this.lastTime){
-                if(nowTime-this.lastTime>Math.random(9)*100+50){
+            if(this.is_start==1){
+                if(this.lastTime){
+                    if(nowTime-this.lastTime>Math.random(9)*100+150){
+                        this.loadingNum++;
+                        this.lastTime = new Date();
+                    }
+                }else{
                     this.loadingNum++;
                     this.lastTime = new Date();
                 }
-            }else{
-                this.loadingNum++;
-                this.lastTime = new Date();
+
+                if(this.loadingNum> 49 && this.loadingNum <89){
+                    this.isHide=2
+                }else if( this.loadingNum >89){
+                    this.isHide=4
+                }
+
+                if (this.loadingNum <100) { 
+                    window.requestAnimationFrame(this.anmtion);
+                }else{
+                    this.isHide = 3;
+                    ;Math.random()*10>1?this.is_error = 1:this.is_error = 0;
+                    console.log(this.isHide)
+                    // for(let g=1;g<5;g++){
+                    //     document.getElementsByClassName("anmtion"+g)[0].className = "anmtion"+g;
+                    // }
+                }
+
             }
-            if (this.loadingNum <100) { 
-                window.requestAnimationFrame(this.anmtion);
-            }else{
-                this.isHide = 3;
-                ;Math.random()*10>9?this.is_error = 1:this.is_error = 0;
-                console.log(this.isHide)
-                // for(let g=1;g<5;g++){
-                //     document.getElementsByClassName("anmtion"+g)[0].className = "anmtion"+g;
-                // }
-            }
+                    
+
+            
+        }
+    },
+    computed:{
+        changMenu(){
+            console.log(this.$store.state.is_check);
+            this.anmtion(this.$store.state.is_check)
         }
     }
 
 }
 </script>
-
 <style lang="scss" scoped>
 
     .bodyBg{background: #e2e4e9;width: 100%;height: 100%;padding: 20px 40px;
@@ -275,74 +260,7 @@ export default {
         }
         .center{
             position: relative;
-            .menu{
-                width: 238px;
-                height: 375px;
-                background-image: linear-gradient(#184A4C, #171D31);
-                position: absolute;
-                top: -20px;
-                right: 0;
-                >.logo img{
-                    display: block;
-                    width: 187px;
-                    margin: auto;
-                    margin-top: 40px;
-                }
-                >.logo>p{
-                    font-size: 16px;
-                    color: #FFFFFF;
-                    letter-spacing: 10px;
-                    text-align: center;
-                    text-indent: 6px;
-                    margin-bottom: 38px;
-                }
-                >.debug,.start,.successful{height: 72px;width: 100%;padding: 10px 0;border-top: 1px solid #57646f;position: relative;
-                    >span{
-                        position: absolute;
-                        width: 187px;
-                        height: 52px;
-                        line-height: 52px;
-                        margin: auto;
-                        font-size: 28px;
-                        color: #FFFFFF;
-                        letter-spacing: 11.62px;
-                        text-align: center;text-indent: 60px;
-                        cursor: pointer;
-                        display: block;
-                        top: 10px;
-                        left: 26px;
-                    }
-                }
-                .debug>span{
-                    background-image: url(../images/index/icon_debug.png);
-                    background-repeat: no-repeat;
-                        background-position: 10% 50%;
-                        background-size: 60px 33px;
-                }
-                .start>span{
-                    background-image: url(../images/index/icon_unStrat.png);
-                    background-repeat: no-repeat;
-                        background-position: 10% 50%;
-                        background-size: 60px 33px;
-                }
-                .successful>span{
-                    background-image: url(../images/index/icon_seccful.png);
-                    background-repeat: no-repeat;
-                        background-position: 10% 50%;
-                        background-size: 60px 33px;
-                }
-                .active{
-                    >div{
-                        width: 187px;
-                        height: 52px;
-                        margin: auto;
-                        opacity: 0.44;
-                        background-color: rgba(255,255,255,0.22);
-                        border-radius: 6px;
-                        border-radius: 6px;
-                    }
-                }
-            }
+            
             .mid{
                 width: 1040px;margin: auto;
                 .Waiting{
@@ -358,7 +276,9 @@ export default {
                 .success{position: relative;
                     .success_bg1,.success_bg2{position: absolute;top: 0;left: 0;}
                 }
-                .error{position: relative;}
+                .error{position: relative;
+                    .error_bg1,.error_bg2{position: absolute;top: 0;left: 0;}
+                }
                 .anasing{position: relative;
                     .anasingABg,.anasingBBg{position: absolute;top: -90px;left: 0;display: block;width: 100%;}
                 }

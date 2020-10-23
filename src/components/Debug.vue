@@ -1,24 +1,7 @@
 <template>
   <div class="bodyBg">
       <div class="center">
-            <ul class="menu">
-                <li class="logo">
-                    <img :src="logo">
-                    <p>打击骗保机器人</p>
-                </li>
-                <li class="debug" :class="is_check == '0' ? 'active' : '' ">
-                    <div></div>
-                    <span @click="check_menu($event)" data-index='0'>调试</span>
-                </li>
-                <li class="start" :class="is_check == '1' ? 'active' : '' ">
-                    <div></div>
-                    <span @click="check_menu($event)" data-index='1'>启动</span>
-                </li>
-                <li class="successful" :class="is_check == '2' ? 'active' : '' ">
-                    <div></div>
-                    <span @click="check_menu($event)" data-index='2'>成果</span>
-                </li>
-            </ul>
+            <Menu></Menu>
             <div class="mid">
                 <div class="information">
                     <p class="en">ACQUISITION AND DEBUGGING</p>
@@ -73,9 +56,12 @@
 </template>
 
 <script>
-import { Button, Select, Form, FormItem } from "element-ui";
-
+import 'element-ui/lib/theme-chalk/index.css';
+import Menu from './Menu'
 export default {
+     components: {
+         Menu
+    },
     data(){
         return {
             logo : require('../images/login/title.png'),

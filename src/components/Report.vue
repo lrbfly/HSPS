@@ -7,24 +7,7 @@
                     </el-option>
                 </el-select>
             </div>
-            <ul class="menu">
-                <li class="logo">
-                    <img :src="logo">
-                    <p>打击骗保机器人</p>
-                </li>
-                <li class="debug" :class="is_check == '0' ? 'active' : '' ">
-                    <div></div>
-                    <span @click="check_menu($event)" data-index='0'>调试</span>
-                </li>
-                <li class="start" :class="is_check == '1' ? 'active' : '' ">
-                    <div></div>
-                    <span @click="check_menu($event)" data-index='1'>启动</span>
-                </li>
-                <li class="successful" :class="is_check == '2' ? 'active' : '' ">
-                    <div></div>
-                    <span @click="check_menu($event)" data-index='2'>成果</span>
-                </li>
-            </ul>
+            <Menu></Menu>
             <div class="mid">
                 <div class="information">
                     <p class="en">BASIC INFORMATION</p>
@@ -74,9 +57,11 @@
 </template>
 
 <script>
-import { Button, Select, Form, FormItem } from "element-ui";
-
+import Menu from './Menu'
 export default {
+     components: {
+         Menu
+    },
     data(){
         return {
             logo : require('../images/login/title.png'),
@@ -231,14 +216,15 @@ export default {
                         border-radius: 5px;
                         border-radius: 5px;
                 .Mitems{height: 76px;width: 100%;display: flex;justify-content: space-between;
-                    >li{width: 332px;
+                    >li{width: 332px;text-align: left; padding: 20px;
                         background-image: linear-gradient(225deg, #E9EBEF 0%, #BAB8C3 100%);border-radius: 5px;border-radius: 5px;
                         border: 0.74px solid #184A4C;
                         .zh{
                             font-size: 23.62px;
                             color: #FFFFFF;
                             letter-spacing: 0;
-                            line-height: 19.19px;
+                            line-height: 24px;
+                            margin-bottom: 8px;
                             -webkit-background-clip:text;
                             -webkit-text-fill-color:transparent;
                             background-image: linear-gradient(to right,#184A4C ,#171D31);
@@ -253,7 +239,6 @@ export default {
                             -webkit-background-clip:text;
                             -webkit-text-fill-color:transparent;
                             background-image: linear-gradient(to right,#184A4C ,#171D31);
-                            margin-bottom: 40px;
                         }
 
                     }
